@@ -426,34 +426,27 @@ let userController = {
   //找追蹤自己的用戶
   getFollowers: async (req, res) => {
     try {
-      const followers = await User.findAll({
-        where: { id: req.params.id },
-        attributes: ['account'],
-        include: [
-          {
-            model: User,
-            as: 'Followers',
-            attributes: [
-              ['id', 'followerId'],
-              'avatar',
-              'account',
-              'name',
-              'introduction',
-              'createdAt',
-              [
-                sequelize.literal(
-                  `EXISTS (SELECT * FROM Followships WHERE Followships.followerId =${
-                    helpers.getUser(req).id
-                  }  AND Followships.followingId = User.id )`
-                ),
-                'isFollowed'
-              ]
-            ]
-          }
-        ],
+      const user = await User.findByPk(req.params.id, {
+        include: [{ model: User, as: 'Followers' }],
         order: [[sequelize.literal('Followers.createdAt'), 'DESC']]
       })
-      return res.json(followers[0].Followers)
+      if (!user) {
+        return res.json({
+          status: 'error',
+          message: 'The user you looking up did NOT exist！'
+        })
+      }
+      const followers = user.Followers.map((follower) => ({
+        followerId: follower.id,
+        name: follower.name,
+        avatar: follower.avatar,
+        account: follower.account,
+        introduction: follower.introduction,
+        isFollowed: req.user.Followings
+          ? req.user.Followings.map((user) => user.id).includes(follower.id)
+          : null
+      }))
+      return res.json(followers)
     } catch (err) {
       console.log(err)
     }
