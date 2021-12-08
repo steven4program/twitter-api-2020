@@ -381,7 +381,7 @@ let userController = {
             ),
             'FollowingsCount'
           ],
-          // 存在 followerId = 當前使用者；followingId = 現在看到的人(Followings.id)
+          // 存在 followerId = 當前使用者；followingId = 現在看到的人(User.id)
           [
             sequelize.literal(
               `EXISTS (SELECT * FROM Followships WHERE Followships.followerId =${
