@@ -41,8 +41,7 @@ const io = require('socket.io')(server, {
       'http://localhost:3000'
     ],
     methods: ['GET', 'POST'],
-    transports: ['websocket', 'polling'],
-    credentials: true
+    transports: ['websocket', 'polling']
   },
   allowEIO3: true
 })
@@ -54,6 +53,7 @@ io.on('connection', (socket) => {
   console.log('有人加入公開聊天室，目前人數:', clientsCount)
 
   socket.on('join', (name) => {
+    users.set(socket.id, name)
     io.emit('new member', name)
   })
 
