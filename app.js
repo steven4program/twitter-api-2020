@@ -34,7 +34,19 @@ app.use(express.static(path.join(__dirname, 'public')))
 
 // Socket
 const server = require('http').createServer(app)
-const io = require('socket.io')(server)
+
+const io = require('socket.io')(server, {
+  cors: {
+    origin: [
+      'https://learnpytest.github.io/Front_End_Vue_Simple_Twitter',
+      'http://localhost:3000',
+      'http://localhost:8080'
+    ],
+    methods: ['GET', 'POST']
+  },
+  allowEIO3: true
+})
+
 const users = new Map() //儲存 Socket id 對應到的使用者名稱
 
 io.on('connection', (socket) => {
