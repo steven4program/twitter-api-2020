@@ -36,40 +36,6 @@ app.use('/upload', express.static(__dirname + '/upload'))
 const server = require('http').createServer(app)
 require('./socket/socketio').socket(server)
 
-const io = require('socket.io')(server, {
-  cors: {
-    origin: [
-      'https://learnpytest.github.io/Front_End_Vue_Simple_Twitter',
-      'http://localhost:3000',
-      'http://localhost:8080'
-    ],
-    methods: ['GET', 'POST']
-  },
-  allowEIO3: true
-})
-
-const users = new Map() //儲存 Socket id 對應到的使用者名稱
-
-io.on('connection', (socket) => {
-  console.log(`${socket.id} connected`)
-  const { clientsCount } = io.engine
-  console.log('有人加入公開聊天室，目前人數:', clientsCount)
-
-  socket.on('join', (name) => {
-    users.set(socket.id, name)
-    io.emit('new member', name)
-  })
-
-  socket.on('message', (name, msg) => {
-    io.emit('new message', name, msg)
-  })
-
-  socket.on('disconnect', () => {
-    const name = users.get(socket.id)
-    io.emit('member leave', name)
-  })
-})
-
 server.listen(port, () => console.log(`Example app listening on port ${port}!`))
 
 require('./routes')(app)
