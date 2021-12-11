@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" type="text/css" href="main.css">
+  <title>Client</title>
+
+</head>
+
+<body>
+  <!-- 建立h3標題 -->
+  <h3 id="title">歡迎來到WebSocket聊天室</h3>
+  <!-- 建立ul清單，用於顯示聊天室訊息 -->
+  <ul id="messages"></ul>
+  <!-- 建立form表單，內部包含input元件及button元件 -->
+  <form id="form" action="">
+    <input id="input" autocomplete="off">
+    <button>Send</button>
+  </form>
+  <!-- 匯入Socket.IO套件 -->
+  <script src="/socket.io/socket.io.js"></script>
+  <!-- 匯入JavaScript程式碼 -->
+  <script src="./index.js"></script>
+</body>
+
+</html>
