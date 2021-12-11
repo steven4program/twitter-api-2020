@@ -38,7 +38,8 @@ const io = require('socket.io')(server, {
   cors: {
     origin: [
       'https://learnpytest.github.io/Front_End_Vue_Simple_Twitter',
-      'http://localhost:3000'
+      'http://localhost:3000',
+      'http://localhost:8080'
     ],
     methods: ['GET', 'POST'],
     transports: ['websocket', 'polling']
