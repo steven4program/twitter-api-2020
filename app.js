@@ -34,6 +34,7 @@ app.use('/upload', express.static(__dirname + '/upload'))
 
 // Socket
 const server = require('http').createServer(app)
+require('./socket/socketio').socket(server)
 
 const io = require('socket.io')(server, {
   cors: {
