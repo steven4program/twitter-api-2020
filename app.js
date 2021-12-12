@@ -82,8 +82,9 @@ io.on('connection', (socket) => {
   })
 })
 
-server.listen(port, () => console.log(`Example app listening on port ${port}!`))
+
 
 require('./routes')(app)
+server.listen(port, () => console.log(`Example app listening on port ${port}!`))
 
 module.exports = app
