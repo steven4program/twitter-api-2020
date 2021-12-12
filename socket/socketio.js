@@ -25,10 +25,6 @@ const socket = (server) => {
     }
   ]
 
-  app.get('/', (req, res) => {
-    res.send('Hello')
-  })
-
   io.on('connection', (socket) => {
     console.log('a user connected')
     const { clientsCount } = io.engine
