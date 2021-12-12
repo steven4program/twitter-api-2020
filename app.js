@@ -36,8 +36,8 @@ app.use('/upload', express.static(__dirname + '/upload'))
 const server = require('http').createServer(app)
 require('./socket/socketio').socket(server)
 
-server.listen(port, () => console.log(`Example app listening on port ${port}!`))
-
 require('./routes')(app)
+
+server.listen(port, () => console.log(`Example app listening on port ${port}!`))
 
 module.exports = app
