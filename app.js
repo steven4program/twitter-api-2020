@@ -33,14 +33,14 @@ app.use('/upload', express.static(__dirname + '/upload'))
 // app.use(express.static(path.join(__dirname, 'public')))
 
 // Socket
-<<<<<<< HEAD
 // const exphbs = require('express-handlebars')
 const server = require('http').Server(app)
 const io = require('socket.io')(server, {
   cors: {
     origin: [
       'http://localhost:3000',
-      'http://localhost:8080'
+      'http://localhost:8080',
+      'https://twitter-llrs-chatroom.herokuapp.com/'
     ],
     methods: ['GET', 'POST'],
     transports: ['websocket', 'polling'],
@@ -83,15 +83,7 @@ io.on('connection', (socket) => {
   })
 })
 
-
-=======
-const server = require('http').createServer(app)
-require('./socket/socketio').socket(server)
->>>>>>> 1f99a2d786287c09073980ba50e1dc325a5d7d36
-
 require('./routes')(app)
-server.listen(port, () => console.log(`Example app listening on port ${port}!`))
-
 server.listen(port, () => console.log(`Example app listening on port ${port}!`))
 
 module.exports = app
