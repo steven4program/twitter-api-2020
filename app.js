@@ -33,41 +33,34 @@ app.use('/upload', express.static(__dirname + '/upload'))
 // app.use(express.static(path.join(__dirname, 'public')))
 
 // Socket
-// const exphbs = require('express-handlebars')
-const server = require('http').Server(app)
-const io = require('socket.io')(server)
-let users = []
-let messagesArr = []
-let index = 0
-const messages = [
-  {
-    name: 'Jack',
-    message: 'HELLOOOOO'
-  }
-]
-app.get('/', (req, res) => {
-  res.send('Hello')
+
+const server = require('http').createServer(app)
+const io = require('socket.io')(server, {
+  cors: {
+    origin: ['http://localhost:3000'],
+    methods: ['GET', 'POST'],
+    transports: ['websocket', 'polling'],
+    credentials: true
+  },
+  allowEIO3: true
 })
 io.on('connection', (socket) => {
-  console.log('a user connected')
-  socket.emit('allMessages', messages)
-  socket.on('message', (obj) => {
-    console.log('使用者' + obj.name + '傳來訊息' + obj.message)
-    messages.push(obj)
-    io.emit('newMessage', obj)
+  console.log('A user connected')
+  const { clientsCount } = io.engine
+  console.log(`在線人數: ${clientsCount}`)
+
+  socket.on('joinRoom', () => {
+    socket.broadcast.emit('join', {
+      message: '一位 User 進入聊天室'
+    })
   })
-  // socket.on("mouseMove", obj => {
-  //   console.log(obj)
-  // })
-  // socket.emit("")
-  socket.on('newuser', (username) => {
-    // username來自前端進入聊天室的動作
-    console.log(`${username} has arrived the chatroom`)
-    socket.username = username
-    users.push(socket)
+
+  socket.on('message', (msg) => {
+    console.log('message', msg)
   })
+
   socket.on('disconnect', () => {
-    console.log(`${socket.username} has left the chatroom.`)
+    console.log('一位 User 離開聊天室')
   })
 })
 
