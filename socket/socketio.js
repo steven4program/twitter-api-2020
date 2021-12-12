@@ -1,10 +1,14 @@
 const socket = (server) => {
   const io = require('socket.io')(server, {
     cors: {
-      origin: ['http://localhost:3000'],
+      origin: [
+        'https://learnpytest.github.io/Front_End_Vue_Simple_Twitter/',
+        'https://twitter-llrs-chatroom.herokuapp.com/',
+        'http://localhost:3000',
+        'http://localhost:8080'
+      ],
       methods: ['GET', 'POST'],
-      transports: ['websocket', 'polling'],
-      credentials: true
+      transports: ['websocket', 'polling']
     },
     allowEIO3: true
   })
