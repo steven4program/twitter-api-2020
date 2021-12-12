@@ -34,54 +34,8 @@ app.use('/upload', express.static(__dirname + '/upload'))
 
 // Socket
 // const exphbs = require('express-handlebars')
-const server = require('http').Server(app)
-const io = require('socket.io')(server, {
-  cors: {
-    origin: [
-      'http://localhost:3000',
-      'http://localhost:8080',
-      'https://twitter-llrs-chatroom.herokuapp.com/'
-    ],
-    methods: ['GET', 'POST'],
-    transports: ['websocket', 'polling'],
-    credentials: true
-  },
-  allowEIO3: true
-})
-let users = []
-let messagesArr = []
-let index = 0
-const messages = [
-  {
-    name: 'Jack',
-    message: 'HELLOOOOO'
-  }
-]
-app.get('/', (req, res) => {
-  res.send('Hello')
-})
-io.on('connection', (socket) => {
-  console.log('a user connected')
-  socket.emit('allMessages', messages)
-  socket.on('message', (obj) => {
-    console.log('使用者' + obj.name + '傳來訊息' + obj.message)
-    messages.push(obj)
-    io.emit('newMessage', obj)
-  })
-  // socket.on("mouseMove", obj => {
-  //   console.log(obj)
-  // })
-  // socket.emit("")
-  socket.on('newuser', (username) => {
-    // username來自前端進入聊天室的動作
-    console.log(`${username} has arrived the chatroom`)
-    socket.username = username
-    users.push(socket)
-  })
-  socket.on('disconnect', () => {
-    console.log(`${socket.username} has left the chatroom.`)
-  })
-})
+const server = require('http').createServer(app)
+require('./socket/socketio').socket(server)
 
 require('./routes')(app)
 server.listen(port, () => console.log(`Example app listening on port ${port}!`))
