@@ -13,6 +13,7 @@ const adminController = require('../controllers/api/adminController')
 const replyController = require('../controllers/api/replyController')
 const likeController = require('../controllers/api/likeController')
 const followshipController = require('../controllers/api/followshipController')
+const chatController = require('../controllers/api/chatController')
 
 /* authentication */
 const { authenticated, authenticatedAdmin } = require('../middleware/auth')
@@ -80,5 +81,7 @@ router.delete(
   authenticatedAdmin,
   adminController.deleteTweet
 )
+
+router.get('/public', chatController.chatRoom)
 
 module.exports = router

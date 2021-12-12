@@ -1,47 +1,36 @@
-// const socketio = require('socket.io')
+const socket = (server) => {
+  const io = require('socket.io')(server, {
+    cors: {
+      origin: [
+        'https://learnpytest.github.io/Front_End_Vue_Simple_Twitter/',
+        'https://twitter-llrs-chatroom.herokuapp.com/',
+        'http://localhost:3000',
+        'http://localhost:8080'
+      ],
+      methods: ['GET', 'POST'],
+      transports: ['websocket', 'polling']
+    },
+    allowEIO3: true
+  })
+  io.on('connection', (socket) => {
+    console.log('A user connected')
+    const { clientsCount } = io.engine
+    console.log(`在線人數: ${clientsCount}`)
 
-// let io
-// let userList = []
+    socket.on('joinRoom', () => {
+      socket.broadcast.emit('join', {
+        message: '一位 User 進入聊天室'
+      })
+    })
 
-// const socket = (server) => {
-//   io = socketio(server, {
-//     cors: {
-//       origin: [
-//         'https://learnpytest.github.io/Front_End_Vue_Simple_Twitter',
-//         'http://localhost:3000',
-//         'http://localhost:8080'
-//       ],
-//       methods: ['GET', 'POST'],
-//       transports: ['websocket', 'polling'],
-//       credentials: true
-//     },
-//     allowEIO3: true
-//   })
-//   console.log('Init success')
+    socket.on('message', (msg) => {
+      console.log('message', msg)
+    })
 
-//   if (!io) throw new Error('Init fail')
+    socket.on('disconnect', () => {
+      console.log('一位 User 離開聊天室')
+    })
+  })
+}
 
-//   io.on('connection', (socket) => {
-//     console.log('connected')
-//     socket.on('join', () => {
-//       console.log('User join')
-//       socket.broadcast.emit('new member', {
-//         message: 'User join'
-//       })
-//     })
-
-//     socket.on('message', (msg) => {
-//       console.log('msg', msg)
-//       socket.broadcast.emit('new message', msg)
-//     })
-
-//     socket.on('disconnect', () => {
-//       console.log('User leave.')
-//       io.emit('member leave', {
-//         message: 'user leave'
-//       })
-//     })
-//   })
-// }
-
-// module.exports = { socket }
+module.exports = { socket }
