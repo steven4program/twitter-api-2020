@@ -35,7 +35,18 @@ app.use('/upload', express.static(__dirname + '/upload'))
 // Socket
 // const exphbs = require('express-handlebars')
 const server = require('http').Server(app)
-const io = require('socket.io')(server)
+const io = require('socket.io')(server, {
+  cors: {
+    origin: [
+      'http://localhost:3000',
+      'http://localhost:8080'
+    ],
+    methods: ['GET', 'POST'],
+    transports: ['websocket', 'polling'],
+    credentials: true
+  },
+  allowEIO3: true
+})
 let users = []
 let messagesArr = []
 let index = 0
