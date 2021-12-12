@@ -16,21 +16,7 @@ const socket = (server) => {
     allowEIO3: true
   })
 
-  let users = []
-  let messagesArr = []
-  let index = 0
-
-  const messages = [
-    {
-      id: '',
-      name: 'Jack',
-      message: 'HELLOOOOO',
-      type: 0
-    }
-  ]
-
   io.on('connection', async (socket) => {
-    console.log('a user connected')
     const { clientsCount } = io.engine
     console.log(`在線人數: ${clientsCount}`)
 
@@ -39,14 +25,12 @@ const socket = (server) => {
     })
 
     socket.on('joined', (obj) => {
-      console.log('joined', obj)
       socket.broadcast.emit('joined', {
         ...obj
       })
     })
 
     socket.on('leaved', async (obj) => {
-      console.log('leaved', obj)
       const user = await Member.findByPk(obj.id)
       if (user) return
       await Member.destroy({ where: { id: obj.id } })
@@ -66,7 +50,7 @@ const socket = (server) => {
       socket.broadcast.emit('leaved', obj)
     })
 
-    socket.emit('allMessages', async () => {
+    const allMessages = async () => {
       let chats = await Chat.findAll({
         raw: true,
         attribute: [
@@ -81,8 +65,10 @@ const socket = (server) => {
         ...chat,
         message: chat.message == 0 ? 0 : chat.message
       }))
-      return res.json(chats)
-    })
+      socket.emit('allMessages', chats)
+    }
+
+    allMessages()
 
     socket.on('typing', (data) => {
       socket.broadcast.emit('typing', data)
@@ -92,7 +78,6 @@ const socket = (server) => {
     })
 
     socket.on('message', async (obj) => {
-      console.log('使用者' + obj.name + '傳來訊息' + obj.message)
       await Chat.create({
         UserId: obj.id,
         name: obj.name,
@@ -102,12 +87,14 @@ const socket = (server) => {
       io.emit('newMessage', obj)
     })
 
-    socket.emit('allUsers', async () => {
+    const allUsers = async () => {
       let members = await Member.findAll({
         raw: true
       })
-      return res.json(members)
-    })
+      socket.emit('allUsers', members)
+    }
+
+    allUsers()
 
     socket.on('user', async (obj) => {
       // username來自前端進入聊天室的動作
